@@ -13,7 +13,7 @@ connect_str = os.getenv('DefaultEndpointsProtocol=https;AccountName=pencilsketch
 container_name = 'photos'
 
 # Set your Azure Blob Storage connection string and container name
-blob_service_client = BlobServiceClient.from_connection_string(conn_str=connect_str)
+blob_service_client = BlobServiceClient.from_connection_string(conn_str='DefaultEndpointsProtocol=https;AccountName=pencilsketchstorage;AccountKey=5rzp3AzZEcisRiv76HG/ENvFXEafk8+/jw+4KwweFFKPxQSpp6r/EL/LkMna/DqYyug62pijZuZW+ASturUioQ==;EndpointSuffix=core.windows.net')
 container_client = blob_service_client.get_container_client(container=container_name)
 
 # Allowed file extensions
