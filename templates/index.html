@@ -39,10 +39,19 @@
             background-color: #0056b3;
             transform: scale(1.1);
         }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to Image to Pencil Sketch App</h1>
-    <a href="{{ url_for('upload_file') }}">Upload Image</a>
+    <div class="container">
+        <h1>Welcome to Image to Pencil Sketch App</h1>
+        <a href="{{ url_for('upload_file') }}">Upload Image</a>
+    </div>
 </body>
 </html>
