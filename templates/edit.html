@@ -1,45 +1,58 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Image</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Kristen ITC', cursive;
+            background: url('{{ url_for('static', filename='background.jpg') }}') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
             text-align: center;
             padding: 50px;
         }
         h1, h2 {
-            color: #333;
-            font-size: 3em;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            color: #fff; /* Makes the text white */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Adds a shadow for contrast */
+            background-color: rgba(0, 0, 0, 0.5); /* Adds a semi-transparent black background */
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
         }
         form {
             display: inline-block;
             margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
             background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         input[type="submit"], button {
-            padding: 20px 40px;
-            background-color: #008cba;
+            padding: 15px 30px;
+            background-color: #007bff;
             color: #fff;
             border: none;
-            border-radius: 10px;
-            font-size: 2em;
+            border-radius: 50px;
+            font-size: 1.5em;
             cursor: pointer;
+            transition: background-color 0.3s ease;
             margin-top: 20px;
+            margin-right: 10px;
+            font-family: 'Kristen ITC', cursive;
         }
         input[type="submit"]:hover, button:hover {
-            background-color: #005f5f;
+            background-color: #0056b3;
         }
         img {
             margin-top: 20px;
             max-width: 80%;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
         }
         label {
             display: block;
@@ -47,7 +60,7 @@
             margin-bottom: 20px;
         }
         select {
-            font-size: 2em;
+            font-size: 1.5em;
             padding: 10px;
             margin: 10px 0 30px 0;
         }
@@ -55,7 +68,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            font-size: 1.5em;
             margin: 20px 0;
         }
         .intensity-container label {
@@ -64,6 +77,11 @@
         .intensity-container input[type="range"] {
             margin-left: 20px;
             vertical-align: middle;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -80,7 +98,10 @@
             <label for="intensity">Image Intensity:</label>
             <input type="range" id="intensity" name="intensity" min="0.5" max="2" step="0.1" value="1">
         </div>
-        <input type="submit" value="Convert to Sketch">
+        <div class="button-container">
+            <input type="submit" value="Convert to Sketch">
+            <button id="voice-command-btn">Voice Command</button>
+        </div>
     </form>
     {% if sketch_data %}
         <h2>Sketch Preview</h2>
@@ -89,7 +110,6 @@
             <button type="submit">Export to MS Paint</button>
         </form>
     {% endif %}
-    <button id="voice-command-btn">Voice Command</button>
     <script>
         document.getElementById('voice-command-btn').addEventListener('click', async () => {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -122,128 +142,3 @@
     </script>
 </body>
 </html>
-=======
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Image</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
-            padding: 50px;
-        }
-        h1, h2 {
-            color: #333;
-            font-size: 3em;
-        }
-        form {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #fff;
-        }
-        input[type="submit"], button {
-            padding: 20px 40px;
-            background-color: #008cba;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 2em;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        input[type="submit"]:hover, button:hover {
-            background-color: #005f5f;
-        }
-        img {
-            margin-top: 20px;
-            max-width: 80%;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-        label {
-            display: block;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-        select {
-            font-size: 2em;
-            padding: 10px;
-            margin: 10px 0 30px 0;
-        }
-        .intensity-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            margin: 20px 0;
-        }
-        .intensity-container label {
-            margin: 0;
-        }
-        .intensity-container input[type="range"] {
-            margin-left: 20px;
-            vertical-align: middle;
-        }
-    </style>
-</head>
-<body>
-    <h1>Edit Image</h1>
-    <form id="sketch-form" method="post">
-        <label for="sketch_options">Choose Sketch Style:</label>
-        <select name="sketch_options" id="sketch_options">
-            <option value="pencil">Pencil Sketch</option>
-            <option value="charcoal">Charcoal Sketch</option>
-            <option value="colored">Colored Sketch</option>
-        </select>
-        <div class="intensity-container">
-            <label for="intensity">Image Intensity:</label>
-            <input type="range" id="intensity" name="intensity" min="0.5" max="2" step="0.1" value="1">
-        </div>
-        <input type="submit" value="Convert to Sketch">
-    </form>
-    {% if sketch_data %}
-        <h2>Sketch Preview</h2>
-        <img src="data:image/png;base64,{{ sketch_data }}" alt="Sketch">
-        <form id="export-form" action="{{ url_for('export_to_paint', output_filename=output_filename) }}" method="post">
-            <button type="submit">Export to MS Paint</button>
-        </form>
-    {% endif %}
-    <button id="voice-command-btn">Voice Command</button>
-    <script>
-        document.getElementById('voice-command-btn').addEventListener('click', async () => {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.start();
-
-            recognition.onresult = async (event) => {
-                const command = event.results[0][0].transcript.toLowerCase();
-                const response = await fetch('{{ url_for("voice_command") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ command }),
-                });
-                const result = await response.json();
-
-                if (result.action === 'start') {
-                    document.getElementById('sketch-form').submit();
-                } else if (result.action === 'stop') {
-                    window.location.href = '/';
-                } else if (result.action === 'save') {
-                    document.getElementById('sketch-form').submit();
-                    document.getElementById('export-form').submit();
-                } else {
-                    alert(result.message);
-                }
-            };
-        });
-    </script>
-</body>
-</html>
->>>>>>> master
