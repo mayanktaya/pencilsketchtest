@@ -133,15 +133,20 @@
             </div>
             <div class="button-container">
                 <input type="submit" value="Convert to Sketch">
-                <button id="voice-command-btn">Voice Command</button>
+                <button id="voice-command-btn" type="button">Voice Command</button>
             </div>
         </form>
     </div>
     {% if sketch_data %}
         <h2>Sketch Preview</h2>
         <img src="data:image/png;base64,{{ sketch_data }}" alt="Sketch">
-        <form id="export-form" action="{{ url_for('export_to_paint', output_filename=output_filename) }}" method="post">
-            <button type="submit">Export to MS Paint</button>
+        
+        <!-- Provide a download button -->
+        <a href="{{ url_for('download_file', filename=output_filename) }}" class="button">Download Image</a>
+
+        <!-- New form to open the image in MS Paint after downloading -->
+        <form id="open-paint-form" action="{{ url_for('open_paint', filename=output_filename) }}" method="post">
+            <button type="submit">Open in MS Paint</button>
         </form>
     {% endif %}
     <script>
