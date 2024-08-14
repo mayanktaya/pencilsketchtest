@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file
 import numpy as np
 import cv2
 import os
@@ -43,9 +43,10 @@ def convert_to_sketch(image_bytes, output_path, colored=False, style='pencil', i
         sketch_image = blended
     
     _, buffer = cv2.imencode('.png', sketch_image)
-    
-    # Upload the processed image back to Azure Blob Storage
-    container_client.upload_blob(name=output_path, data=BytesIO(buffer), overwrite=True)
+
+    # Save the image temporarily on the server
+    with open(output_path, 'wb') as file:
+        file.write(buffer.tobytes())
     
     return buffer
 
@@ -83,23 +84,25 @@ def edit_file(filename):
         image_bytes = blob_client.download_blob().readall()
         
         # Convert image to sketch
-        sketch_image = convert_to_sketch(image_bytes, output_filename, colored, style, intensity)
+        output_path = os.path.join(os.getenv('UPLOAD_FOLDER', '.'), output_filename)
+        sketch_image = convert_to_sketch(image_bytes, output_path, colored, style, intensity)
         sketch_data = base64.b64encode(sketch_image).decode('utf-8')
         
         return render_template('edit.html', sketch_data=sketch_data, filename=filename, output_filename=output_filename)
     return render_template('edit.html', filename=filename)
 
-@app.route('/export_to_paint/<output_filename>', methods=['POST'])
-def export_to_paint(output_filename):
-    # Download the image from Azure Blob Storage
-    blob_client = container_client.get_blob_client(output_filename)
-    image_path = os.path.join(os.getenv('UPLOAD_FOLDER', '.'), output_filename)
+@app.route('/download/<filename>')
+def download_file(filename):
+    # Send the file from the server's temporary storage
+    return send_file(filename, mimetype='image/png', as_attachment=True, download_name=filename)
+
+@app.route('/open_paint/<filename>', methods=['POST'])
+def open_paint(filename):
+    image_path = os.path.join(os.getenv('UPLOAD_FOLDER', '.'), filename)
     
-    with open(image_path, 'wb') as file:
-        file.write(blob_client.download_blob().readall())
-    
+    # Open the image with MS Paint
     subprocess.run(['mspaint', image_path])
-    return redirect(url_for('edit_file', filename=output_filename))
+    return redirect(url_for('edit_file', filename=filename))
 
 @app.route('/voice-command', methods=['POST'])
 def voice_command():
