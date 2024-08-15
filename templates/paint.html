@@ -48,6 +48,7 @@
             cursor: crosshair; /* Default cursor for the canvas */
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white; /* Set the canvas background to white */
         }
         .button {
             padding: 15px 30px;
@@ -118,6 +119,7 @@
     <canvas id="paint-canvas" width="800" height="600"></canvas>
     <div>
         <a href="#" id="save-image" class="button">Save Edited Image</a>
+        <a href="#" id="download-image" class="button">Download Edited Image</a>
     </div>
 
     <script>
@@ -131,6 +133,10 @@
         let actions = [];
         let undoneActions = [];
         let shapeFill = false;
+
+        // Set canvas background to white initially
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Load the converted image into the canvas
         const img = new Image();
@@ -354,6 +360,8 @@
         // Clear the canvas
         document.getElementById('clear').addEventListener('click', function () {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Reload the white background
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Reload the image
             saveAction();
         });
@@ -374,6 +382,15 @@
                     alert('Failed to save the edited image.');
                 }
             });
+        });
+
+        // Download the edited image
+        document.getElementById('download-image').addEventListener('click', function () {
+            const editedImageData = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = editedImageData;
+            a.download = 'edited_image.png';
+            a.click();
         });
 
         // Save the initial state
